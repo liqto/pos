@@ -19,37 +19,37 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: pos_multi_uom_price
-#: code:iXer/pos_multi_uom_price/models/product_template.py:9
+#: code:pos_multi_uom_price/models/product_template.py:9
 #, python-format
 msgid "UOM price"
 msgstr "Precio UOM"
 
 #. module: pos_multi_uom_price
-#: code:iXer/pos_multi_uom_price/models/product_multi_uom_price.py:11
+#: code:pos_multi_uom_price/models/product_multi_uom_price.py:11
 #, python-format
 msgid "Product"
 msgstr "Producto"
 
 #. module: pos_multi_uom_price
-#: code:iXer/pos_multi_uom_price/models/product_multi_uom_price.py:12
+#: code:pos_multi_uom_price/models/product_multi_uom_price.py:12
 #, python-format
 msgid "Category"
 msgstr "Categoría"
 
 #. module: pos_multi_uom_price
-#: code:iXer/pos_multi_uom_price/models/product_multi_uom_price.py:13
+#: code:pos_multi_uom_price/models/product_multi_uom_price.py:13
 #, python-format
 msgid "Unit of Measure"
 msgstr "UOM"
 
 #. module: pos_multi_uom_price
-#: code:iXer/pos_multi_uom_price/models/product_multi_uom_price.py:14
+#: code:pos_multi_uom_price/models/product_multi_uom_price.py:14
 #, python-format
 msgid "Price"
 msgstr "Precio"
 
 #. module: pos_multi_uom_price
-#: code:iXer/pos_multi_uom_price/models/product_multi_uom_price.py:37
+#: code:pos_multi_uom_price/models/product_multi_uom_price.py:37
 #, python-format
 msgid "Product-UOM must be unique and there are duplicates!"
 msgstr "¡Producto-UOM debe ser único y existen duplicados!"
