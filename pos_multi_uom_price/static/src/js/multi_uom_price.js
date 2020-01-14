@@ -10,9 +10,6 @@ var QWeb = core.qweb;
 var _super_orderline = models.Orderline.prototype;
 
 
-//
-// At POS Startup, load the uom price
-//
 models.load_models({
 	model: 'product.multi.uom.price',
 	fields: ['uom_id','product_id','price'],
@@ -30,11 +27,8 @@ models.load_models({
 		}
 	},
 });
-//
-// EHF Extendemos el modelo Orderline con nuevas funciones
-//
+
 models.Orderline = models.Orderline.extend({
-	// EHF Agregamos el uom a la raíz de la linea
 	initialize: function(attr, options) {
 		_super_orderline.initialize.call(this,attr,options);
 		if (options.json) {
@@ -47,8 +41,6 @@ models.Orderline = models.Orderline.extend({
 		}
 		this.uom_id = options.product.uom_id;
 	},
-	// sustituimos la función original 
-	// regresamos la unidad de medida del producto que está en la raíz
 	get_unit: function(){
 		if (this.uom_id){
 			var unit_id = this.uom_id;
@@ -64,7 +56,6 @@ models.Orderline = models.Orderline.extend({
 		}
 		return this.pos.units_by_id[unit_id];
 	},
-	//cambiamos el uom del artículo
 	set_uom: function(uom_id){
 		this.order.assert_editable();
 		this.uom_id = uom_id;
@@ -83,9 +74,6 @@ models.Orderline = models.Orderline.extend({
 });
 
 
-//
-//
-//
 var UOMButton = screens.ActionButtonWidget.extend({
 	template: 'UOMButton',
 	button_click: function(){

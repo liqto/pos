@@ -3,13 +3,13 @@
     'name': "POS multi uom price",
     'summary': 'POS Price per unit of measure',
     'category': 'Point of Sale',
-    'version': '12.0.1.0.0',
+    'version': '13.0.1.0.1',
     'license': "AGPL-3",
     'description': """
         With this module you can sell your products with different units of measure in POS.
     """,
 
-    'author': "ehuerta",
+    'author': "ehuerta at ixer.mx",
     'depends': ['point_of_sale'],
     'data': [
         'security/ir.model.access.csv',

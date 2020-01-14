@@ -7,12 +7,20 @@ from odoo.tools import float_is_zero
 
 _logger = logging.getLogger(__name__)
     
-
-
 class PosOrderLine(models.Model):
     _inherit = 'pos.order.line'
 
     uom_id = fields.Many2one('uom.uom')
+    mask_uom_id = fields.Many2one('uom.uom', string='Product UoM', compute='_get_uom')
+
+    @api.depends('product_uom_id', 'uom_id')
+    def _get_uom(self):
+        for line in self:
+            if line.uom_id:
+                line.mask_uom_id = line.uom_id
+            else:
+                line.mask_uom_id = line.product_uom_id
+
 
 
 class PosOrder(models.Model):
@@ -21,6 +29,11 @@ class PosOrder(models.Model):
     def create_picking(self):
         """Create a picking for each order and validate it."""
         Picking = self.env['stock.picking']
+        # If no email is set on the user, the picking creation and validation will fail be cause of
+        # the 'Unable to log message, please configure the sender's email address.' error.
+        # We disable the tracking in this case.
+        if not self.env.user.partner_id.email:
+            Picking = Picking.with_context(tracking_disable=True)
         Move = self.env['stock.move']
         StockWarehouse = self.env['stock.warehouse']
         for order in self:
@@ -32,7 +45,7 @@ class PosOrder(models.Model):
             order_picking = Picking
             return_picking = Picking
             moves = Move
-            location_id = order.location_id.id
+            location_id = picking_type.default_location_src_id.id
             if order.partner_id:
                 destination_id = order.partner_id.property_stock_customer.id
             else:
@@ -47,6 +60,7 @@ class PosOrder(models.Model):
                 picking_vals = {
                     'origin': order.name,
                     'partner_id': address.get('delivery', False),
+                    'user_id': False,
                     'date_done': order.date_order,
                     'picking_type_id': picking_type.id,
                     'company_id': order.company_id.id,
@@ -58,7 +72,10 @@ class PosOrder(models.Model):
                 pos_qty = any([x.qty > 0 for x in order.lines if x.product_id.type in ['product', 'consu']])
                 if pos_qty:
                     order_picking = Picking.create(picking_vals.copy())
-                    order_picking.message_post(body=message)
+                    if self.env.user.partner_id.email:
+                        order_picking.message_post(body=message)
+                    else:
+                        order_picking.sudo().message_post(body=message)
                 neg_qty = any([x.qty < 0 for x in order.lines if x.product_id.type in ['product', 'consu']])
                 if neg_qty:
                     return_vals = picking_vals.copy()
@@ -68,7 +85,10 @@ class PosOrder(models.Model):
                         'picking_type_id': return_pick_type.id
                     })
                     return_picking = Picking.create(return_vals)
-                    return_picking.message_post(body=message)
+                    if self.env.user.partner_id.email:
+                        return_picking.message_post(body=message)
+                    else:
+                        return_picking.message_post(body=message)
 
             for line in order.lines.filtered(lambda l: l.product_id.type in ['product', 'consu'] and not float_is_zero(l.qty, precision_rounding=l.product_id.uom_id.rounding)):
                 moves |= Move.create({
@@ -97,4 +117,4 @@ class PosOrder(models.Model):
                 moves.filtered(lambda m: m.product_id.tracking == 'none')._action_done()
 
         return True
-         
+

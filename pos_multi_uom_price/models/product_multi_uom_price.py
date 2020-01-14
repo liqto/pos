@@ -8,7 +8,7 @@ class multi_uom(models.Model):
     _name = 'product.multi.uom.price'
     _description = 'Product multiple uom price'     
 
-    product_id = fields.Many2one('product.template', _('Product'), ondelete='set null', readonly=True)
+    product_id = fields.Many2one('product.product', _('Product'), ondelete='set null', readonly=True)
     category_id = fields.Many2one('uom.category', _('Category'), ondelete='set null', readonly=True)
     uom_id = fields.Many2one('uom.uom', string=_("Unit of Measure"), required=True)
     price = fields.Float(_('Price'), required=True, digits=dp.get_precision('Product Price'))
